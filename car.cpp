@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
-//#include <fs_msgs/SlamState.h>
+#include <fs_msgs/PIDControlled.h>
+#include <fs_msgs/SlamState.h>
+
 #include <iostream>
 using namespace std;
 
@@ -21,12 +23,9 @@ class Car{
 
     void readTopics(){
         subscriber = n.subscribe<nav_msgs::Odometry>("/slam/prefiltering/odom_filtered", 1, &Car::updateSpeed, this);
-        // subscriber = n.subscribe<fs_msgs::SlamState>("/slam/slam/slam_state", 1, &Car::updateLapCount, this);
-        //subscriber = n.subscribe("/slam/prefiltering/odom_filtered", 1000, updateSpeed);
-        //subscriber = n.subscribe("/slam/slam/slam_state", 1000, updateLapCount);
-        // subscriber = n.subscribe("/can/command/...", 1000, updateTorque);
-        // subscriber = n.subscribe("/can/command/...", 1000, updateSteeringAngle);
-        // subscriber = n.subscribe("/can/command/... 1000, updateBrakeStatus);
+        subscriber = n.subscribe<fs_msgs::SlamState>("/slam/slam/slam_state", 1, &Car::updateLapCount, this);
+        // subscriber = n.subscribe("/can/command/...", 1000, &Car::updatePID, this);
+
         // subscriber = n.subscribe("/slam/prefiltering/odom_filtered", 1000, updateGPS);
         // subscriber = n.subscribe("/slam/prefiltering/odom_filtered", 1000, updateEFK);
         // subscriber = n.subscribe("/sensors/lidar/velodyne_points", 1000, updateSignalLIDAR);
@@ -36,13 +35,13 @@ class Car{
         cout << msg;
     }
    
-    /* void updateLapCount(SlamState data){
-        int hej = 1;  
-    } */
+    void updateLapCount(const fs_msgs::SlamState::ConstPtr& msg){
+        laps = msg.lap_counter;
+    }
     
     /* void updateSignalLIDAR(){
         old_time = new_time;
-        ros::Time new_time = ros::Time::now();
+        int new_time = ros::Time::now();
 
         if (abs(old_time - new_time) < 30){
             lidar = true;
@@ -55,10 +54,12 @@ class Car{
 
     // void updateGPS();
     // void updateEKF();
-    // void updateTorque();
-    // void updateSteeringAngle();
-    // void updateBrakeStatus();
 
+    void updatePID(const fs_msgs::PIDControlled::ConstPtr& msg){
+        torque = msg.torque;
+        steering_angle = msg.steering;
+        brake = msg.brake;
+    }
 };
 
 int main (int argc, char **argv){
