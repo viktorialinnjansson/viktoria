@@ -22,8 +22,6 @@ class Car{
     void readTopics(){
         subscriber = n.subscribe<nav_msgs::Odometry>("/slam/prefiltering/odom_filtered", 1, &Car::updateSpeed, this);
         // subscriber = n.subscribe<fs_msgs::SlamState>("/slam/slam/slam_state", 1, &Car::updateLapCount, this);
-        //_subscriber_clouds = new Subscriber<PointCloud2>(nh, "velodyne_points", message_queue_size);
-        //_subscriber_clouds->registerCallback(&LidarClusterDetection::CallbackVelodyne, this);
         //subscriber = n.subscribe("/slam/prefiltering/odom_filtered", 1000, updateSpeed);
         //subscriber = n.subscribe("/slam/slam/slam_state", 1000, updateLapCount);
         // subscriber = n.subscribe("/can/command/...", 1000, updateTorque);
