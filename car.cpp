@@ -12,7 +12,7 @@ class Car{
     bool lidar;
 
     ros::NodeHandle n;
-    ros::Time old_time, new_time;
+    // ros::Time old_time, new_time;
     ros::Subscriber subscriber;
 
     public: 
@@ -23,7 +23,8 @@ class Car{
 
     void readTopics(){
         subscriber = n.subscribe<nav_msgs::Odometry>("/slam/prefiltering/odom_filtered", 1, &Car::updateSpeed, this);
-        subscriber = n.subscribe<fs_msgs::SlamState>("/slam/slam/slam_state", 1, &Car::updateLapCount, this);
+        // subscriber = n.subscribe<fs_msgs::SlamState>("/slam/slam/slam_state", 1, &Car::updateLapCount, this);
+        
         // subscriber = n.subscribe("/can/command/...", 1000, &Car::updatePID, this);
 
         // subscriber = n.subscribe("/slam/prefiltering/odom_filtered", 1000, updateGPS);
@@ -35,9 +36,9 @@ class Car{
         cout << msg;
     }
    
-    void updateLapCount(const fs_msgs::SlamState::ConstPtr& msg){
+    /* void updateLapCount(const fs_msgs::SlamState::ConstPtr& msg){
         laps = msg.lap_counter;
-    }
+    } */
     
     /* void updateSignalLIDAR(){
         old_time = new_time;
@@ -55,11 +56,11 @@ class Car{
     // void updateGPS();
     // void updateEKF();
 
-    void updatePID(const fs_msgs::PIDControlled::ConstPtr& msg){
+    /* void updatePID(const fs_msgs::PIDControlled::ConstPtr& msg){
         torque = msg.torque;
         steering_angle = msg.steering;
         brake = msg.brake;
-    }
+    }*/
 };
 
 int main (int argc, char **argv){
